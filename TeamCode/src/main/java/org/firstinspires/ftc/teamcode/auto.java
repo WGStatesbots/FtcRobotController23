@@ -16,10 +16,10 @@ public class auto extends LinearOpMode {
         robot.leftBack.setTargetPositionTolerance(20);
         waitForStart();
         robot.setDTMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.setDTTargetPosition(24*robot.tickperindt);
+        robot.setDTTargetPosition(60*robot.tickperindt);
         robot.setDTMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(3000);
         robot.setDTPower(0.3);
+        sleep(3000);
         robot.setDTTargetPosition(8* robot.tickperindt);
     }
 }
