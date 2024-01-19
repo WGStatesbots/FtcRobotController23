@@ -10,13 +10,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class robot{
     int tickperindt = 200;
-    DcMotorEx leftBack, leftFront, rightBack, rightFront, intake, slideLeft, slideRight;
+    public DcMotorEx leftBack, leftFront, rightBack, rightFront, intake, slideLeft, slideRight, hang;
 
     LinearOpMode OpMode;
 
-    Servo servo;
+    public Servo servo;
+    public int targetHang;
 
-    robot(LinearOpMode opMode){
+    public robot(LinearOpMode opMode){
         OpMode=opMode;
         leftBack = opMode.hardwareMap.get(DcMotorEx.class, "leftRear");
         leftFront = opMode.hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -25,6 +26,7 @@ public class robot{
         intake = opMode.hardwareMap.get(DcMotorEx.class, "intake");
         slideLeft = opMode.hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = opMode.hardwareMap.get(DcMotorEx.class, "slideRight");
+        hang = opMode.hardwareMap.get(DcMotorEx.class, "hang");
         servo = opMode.hardwareMap.get(Servo.class, "servo");
 
         leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -47,6 +49,11 @@ public class robot{
 
         slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hang.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     public void setSlidePosition(int position){
@@ -61,6 +68,15 @@ public class robot{
         rightFront.setPower(y - x - z);
         rightBack.setPower(y + x - z);
         OpMode.telemetry.addLine(String.valueOf(x)+" "+String.valueOf(y)+String.valueOf(z));
+    }
+
+    public void move(double x, double y, double r, double denom){
+        double deno = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(r), 1);
+        leftFront.setPower((y + x + r)/deno);
+        leftBack.setPower((y - x + r)/deno);
+        rightFront.setPower((y - x - r)/deno);
+        rightBack.setPower((y + x - r)/deno);
+        OpMode.telemetry.addLine(String.valueOf(x)+" "+String.valueOf(y)+String.valueOf(r));
     }
     
     public void setDTMode(DcMotor.RunMode runMode){
@@ -81,5 +97,16 @@ public class robot{
         rightBack.setTargetPosition(tp);
         rightFront.setTargetPosition(tp);
         while(OpMode.opModeIsActive()&&(leftBack.isBusy()|| leftBack.isBusy() || rightBack.isBusy() || rightFront.isBusy())){}
+    }
+
+    public void setHangPosition(int pos){
+        hang.setTargetPosition(pos);
+        hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hang.setPower(1);
+    }
+
+    public void setSlidePower(double power){
+        slideLeft.setPower(power);
+        slideRight.setPower(power);
     }
 }

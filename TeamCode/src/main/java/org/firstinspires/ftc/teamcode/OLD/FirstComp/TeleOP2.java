@@ -34,6 +34,17 @@ public class TeleOP2 extends LinearOpMode {
             if(gamepad1.y) robot.servo.setPosition(0);
             else robot.servo.setPosition(0.5);
             telemetry.addLine(String.valueOf(robot.servo.getPosition()));
+
+            if(gamepad1.dpad_up){
+                robot.hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                robot.hang.setPower(1);
+            } else if(gamepad1.dpad_down){
+                robot.hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                robot.hang.setPower(-1);
+            }
+            else {
+                robot.hang.setPower(0);
+            }
         }
     }
 }
