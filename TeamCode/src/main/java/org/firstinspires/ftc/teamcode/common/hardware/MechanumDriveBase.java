@@ -61,4 +61,14 @@ public class MechanumDriveBase extends Subsystem {
                 })
                 .setFinish(()->false);
     }
+
+    public Command goToLeftSpikeMark(){
+        return new LambdaCommand()
+                .setRequirements(this)
+                .setInterruptible(true)
+                .setExecute(()-> {
+                    sampleMecanumDrive.trajectoryBuilder(sampleMecanumDrive.getPoseEstimate())
+                            .
+                })
+    }
 }

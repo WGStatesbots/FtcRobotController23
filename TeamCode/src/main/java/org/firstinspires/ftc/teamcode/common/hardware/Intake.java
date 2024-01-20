@@ -27,6 +27,7 @@ public class Intake extends Subsystem {
         iMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "intake"));
         iLClaw = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "iLClaw"));
         iRClaw = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "iRClaw"));
+        setDefaultCommand(stop());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class Intake extends Subsystem {
     public Command setIntakePower(DoubleSupplier input){
         return new LambdaCommand().setRequirements(this).setInterruptible(true).setExecute(
                 ()-> iMotor.setPower(input.getAsDouble())
-        );
+        ).setFinish(()->true);
     }
 
     public Command clawOpen(){
@@ -56,7 +57,7 @@ public class Intake extends Subsystem {
                     iLClaw.setPosition(0);
                     iRClaw.setPosition(1);
                 }
-                );
+                ).setFinish(()->true);
     }
 
     public Command clawClose(){
@@ -65,7 +66,7 @@ public class Intake extends Subsystem {
                     iLClaw.setPosition(1);
                     iRClaw.setPosition(0);
                 }
-        );
+        ).setFinish(()->true);
     }
     public Command stop(){
         return new LambdaCommand().setRequirements(this).setInterruptible(false).setExecute(

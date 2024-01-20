@@ -52,13 +52,14 @@ public class TestOPEx extends OpModeEX {
         gamepadEX2().left_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.readyHook());
         //Lower hook, then try to raise the robot until power gets too high (may need tuning, 5a just sounded right as stall current is 8a iirc)
         gamepadEX2().right_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.lowerHook()).onFalse(endGame.drop());
-        gamepadEX2().start().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.launchDrone());
+        gamepadEX2().dpad_up().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.launchDrone());
+        gamepadEX2().rightY().buildBinding().greaterThan(0.01).lessThan(-0.01).bind().whileTrue(endGame.manualWinchControl(gamepadEX2().rightY()));
 
         //Move with small dead zones (prevent whine)
-        gamepadEX1().leftX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
+        /*gamepadEX1().leftX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
                 .or(gamepadEX1().leftY().buildBinding().lessThan(-0.01).greaterThan(0.01).bind())
                 .or(gamepadEX1().rightX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind())
-                .whileTrue(mecanumDriveBase.manualControl(gamepadEX1().leftX(),gamepadEX1().leftY(),gamepadEX1().rightX()));
+                .whileTrue(mecanumDriveBase.manualControl(gamepadEX1().leftX(),gamepadEX1().leftY(),gamepadEX1().rightX()));*/
         //if you get an error on the line above, comment it out, uncomment line 82, and comment line 25 of MechanumDriveBase out
         //Intake
         gamepadEX1().a().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(intake.setIntakePower(()->0.5));
@@ -79,7 +80,7 @@ public class TestOPEx extends OpModeEX {
 
     @Override
     public void loopEX() {
-        //mecanumDriveBase.sampleMecanumDrive.setDrivePower(new Pose2d(Math.pow(gamepad1.left_stick_x,5)/2, Math.pow(gamepad1.left_stick_y,5)/2, Math.pow(gamepad1.right_stick_x, 5)/2));
+        mecanumDriveBase.sampleMecanumDrive.setDrivePower(new Pose2d(Math.pow(gamepad1.left_stick_x,3)/2, Math.pow(gamepad1.left_stick_y,3)/2, Math.pow(gamepad1.right_stick_x, 3)/2));
     }
 
     @Override
