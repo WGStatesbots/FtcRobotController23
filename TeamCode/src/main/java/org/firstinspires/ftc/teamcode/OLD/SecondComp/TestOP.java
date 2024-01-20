@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.OLD.SecondComp;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.RR.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.common.RR.drive.SampleMecanumDrive;
 @Autonomous(name = "testOP")
 public class TestOP extends LinearOpMode {
     SampleMecanumDrive dt;

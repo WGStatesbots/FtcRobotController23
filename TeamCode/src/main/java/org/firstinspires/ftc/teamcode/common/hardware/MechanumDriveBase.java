@@ -4,10 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
-import org.firstinspires.ftc.teamcode.RR.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.common.CV.Location;
+import org.firstinspires.ftc.teamcode.common.RR.drive.SampleMecanumDrive;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
-import org.mercurialftc.mercurialftc.scheduler.bindings.gamepadex.DomainSupplier;
 import org.mercurialftc.mercurialftc.scheduler.commands.Command;
 import org.mercurialftc.mercurialftc.scheduler.commands.LambdaCommand;
 import org.mercurialftc.mercurialftc.scheduler.subsystems.Subsystem;
@@ -16,7 +14,7 @@ import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
 import java.util.function.DoubleSupplier;
 
 public class MechanumDriveBase extends Subsystem {
-    private SampleMecanumDrive sampleMecanumDrive;
+    public SampleMecanumDrive sampleMecanumDrive;
     public MechanumDriveBase(@NonNull OpModeEX opModeEX, Pose2D startPose) {
         super(opModeEX);
     }

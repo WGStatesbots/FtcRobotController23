@@ -9,7 +9,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class blueDetector extends OpenCvPipeline {
+public class saturationDetector extends OpenCvPipeline {
     public enum position {
         LEFT,
         RIGHT,
@@ -32,19 +32,19 @@ public class blueDetector extends OpenCvPipeline {
             new Point(600, 200)
     );
 
-    //define Minimum and Maximum blue values (what is blue and what is not)
-    Scalar minHSV = new Scalar(180/2, 50,50);
-    Scalar maxHSV = new Scalar(230/2, 240, 240);
+    //define Minimum and Maximum blue values (what is red and what is not)
+    Scalar minHSV1 = new Scalar(0, 50,50);
+    Scalar maxHSV1 = new Scalar(360/2, 240, 240);
 
     //initalise telemetry
-    public blueDetector(Telemetry t){telemetry = t;}
+    public saturationDetector(Telemetry t){telemetry = t;}
     @Override
     public Mat processFrame(Mat input) {
         //Convert to HSV
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Make all pixels that are blue turn white, everything else black
-        Core.inRange(mat, minHSV, maxHSV, mat);
+        Core.inRange(mat, minHSV1, maxHSV1, mat);
 
         //make matrixes of all the pixels inside of each of the rectangles
         Mat left = mat.submat(LEFT_ROI);
@@ -53,8 +53,8 @@ public class blueDetector extends OpenCvPipeline {
 
         //draw rects on the screen
         Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
 
         //find the average greyness
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
@@ -62,11 +62,11 @@ public class blueDetector extends OpenCvPipeline {
         double midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
 
         if(leftValue<100){
-            pos=position.LEFT;
+            pos= position.LEFT;
         } else if (midValue<100) {
-            pos=position.MIDDLE;
+            pos= position.MIDDLE;
         } else if (rightValue<100) {
-            pos=position.RIGHT;
+            pos= position.RIGHT;
         } else{
              pos = null;
         }

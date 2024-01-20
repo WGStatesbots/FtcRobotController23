@@ -4,19 +4,22 @@ import androidx.annotation.NonNull;
 
 import com.outoftheboxrobotics.photoncore.hardware.motor.PhotonDcMotor;
 import com.outoftheboxrobotics.photoncore.hardware.servo.PhotonCRServo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
 import org.mercurialftc.mercurialftc.scheduler.commands.Command;
 import org.mercurialftc.mercurialftc.scheduler.commands.LambdaCommand;
 import org.mercurialftc.mercurialftc.scheduler.subsystems.Subsystem;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingCRServo;
 import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotor;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotorEX;
 
 import java.util.function.DoubleSupplier;
 
 public class Deposit extends Subsystem {
-    private PhotonDcMotor leftMotor, rightMotor;
-    private PhotonCRServo depositServo;
+    private DcMotorEx leftMotor, rightMotor;
+    private CRServo depositServo;
     public Deposit(@NonNull OpModeEX opModeEX) {
         super(opModeEX);
     }
@@ -59,10 +62,10 @@ public class Deposit extends Subsystem {
 
     @Override
     public void init() {
-        leftMotor = opModeEX.hardwareMap.get(PhotonDcMotor.class, "dLeft");
-        rightMotor = opModeEX.hardwareMap.get(PhotonDcMotor.class, "dRight");
+        leftMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dLeft"));
+        rightMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dRight"));
 
-        depositServo = opModeEX.hardwareMap.get(PhotonCRServo.class, "dServo");
+        depositServo = new CachingCRServo(opModeEX.hardwareMap.get(CRServo.class, "dServo"));
 
         setDefaultCommand(stop());
     }
