@@ -6,6 +6,7 @@ import com.outoftheboxrobotics.photoncore.hardware.motor.PhotonDcMotor;
 import com.outoftheboxrobotics.photoncore.hardware.servo.PhotonCRServo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
 import org.mercurialftc.mercurialftc.scheduler.commands.Command;
@@ -66,6 +67,7 @@ public class Deposit extends Subsystem {
         rightMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dRight"));
 
         depositServo = new CachingCRServo(opModeEX.hardwareMap.get(CRServo.class, "dServo"));
+        depositServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setDefaultCommand(stop());
     }

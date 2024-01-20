@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OPModes;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.common.hardware.Deposit;
@@ -36,25 +37,22 @@ public class TestOPEx extends OpModeEX {
     @Override
     public void registerBindings() {
         //Stops robot
-        gamepadEX2().a().debounce(Binding.DebouncingType.LEADING_EDGE, 0.2).onTrue(new ParallelCommandGroup()
+        gamepadEX2().a().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(new ParallelCommandGroup()
                 .addCommands(deposit.stop())
                 .addCommands(mecanumDriveBase.stop())
                 .addCommands(endGame.manualWinchControl(()->0)));
 
         //Control the deposit (slides) manually
         gamepadEX2().leftY().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
-                .whileTrue(deposit.manualControl(gamepadEX2().leftY()));
+                .whileTrue(deposit.manualControl(gamepadEX2().leftY().invert() ));
         //Control the servo
-        gamepadEX2().right_trigger().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
+        gamepadEX2().right_trigger().buildBinding().greaterThan(0.01).bind()
                 .whileTrue(deposit.manualDepositControl(gamepadEX2().right_trigger()));
         //Raise the hook
-        gamepadEX2().left_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.2).onTrue(endGame.readyHook());
+        gamepadEX2().left_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.readyHook());
         //Lower hook, then try to raise the robot until power gets too high (may need tuning, 5a just sounded right as stall current is 8a iirc)
-        gamepadEX2().right_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.2).onTrue(new SequentialCommandGroup()
-                .addCommands(endGame.lowerHook())
-                .addCommands(endGame.raiseRobot()))
-                .onFalse(endGame.drop());
-        gamepadEX2().start().debounce(Binding.DebouncingType.LEADING_EDGE, 0.2).onTrue(endGame.launchDrone());
+        gamepadEX2().right_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.lowerHook()).onFalse(endGame.drop());
+        gamepadEX2().start().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(endGame.launchDrone());
 
         //Move with small dead zones (prevent whine)
         gamepadEX1().leftX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
@@ -62,7 +60,7 @@ public class TestOPEx extends OpModeEX {
                 .or(gamepadEX1().rightX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind())
                 .whileTrue(mecanumDriveBase.manualControl(gamepadEX1().leftX(),gamepadEX1().leftY(),gamepadEX1().rightX()));
         //Intake
-        gamepadEX1().right_bumper().debounce(Binding.DebouncingType.BOTH, 0.2).onTrue(intake.setIntakePower(()->0.5)).onFalse(intake.setIntakePower(()->0));
+        gamepadEX1().right_bumper().debounce(Binding.DebouncingType.BOTH, 0.1).onTrue(intake.setIntakePower(()->0.5)).onFalse(intake.setIntakePower(()->0));
     }
 
     @Override
@@ -77,7 +75,7 @@ public class TestOPEx extends OpModeEX {
 
     @Override
     public void loopEX() {
-
+        //mecanumDriveBase.sampleMecanumDrive.setDrivePower(new Pose2d(Math.pow(gamepad1.left_stick_x,5)/2, Math.pow(gamepad1.left_stick_y,5)/2, Math.pow(gamepad1.right_stick_x, 5)/2));
     }
 
     @Override

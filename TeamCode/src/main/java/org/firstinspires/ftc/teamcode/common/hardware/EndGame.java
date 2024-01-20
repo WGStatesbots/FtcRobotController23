@@ -52,7 +52,7 @@ public class EndGame extends Subsystem {
                 .setRequirements(this)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    pServo.setPosition(1);
+                    pServo.setPosition(.5);
                 })
                 .setFinish(()->false);
     }
@@ -61,7 +61,7 @@ public class EndGame extends Subsystem {
                 .setRequirements(this)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    hServo.setPosition(1);
+                    hServo.setPosition(0.8);
                 })
                 .setFinish(()->false);
     }
@@ -102,8 +102,6 @@ public class EndGame extends Subsystem {
         return new LambdaCommand()
                 .setRequirements(this)
                 .setInterruptible(false)
-                .setExecute(()->hServo.setPosition(0))
-                .setFinish(()-> (new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS).startTime()-startTime)>500)
-                .setEnd(aBoolean -> hServo.setPosition(1));
+                .setExecute(()->hServo.setPosition(0.4));
     }
 }
