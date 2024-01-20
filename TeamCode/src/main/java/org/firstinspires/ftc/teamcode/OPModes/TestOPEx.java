@@ -10,10 +10,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.MechanumDriveBase;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
 import org.mercurialftc.mercurialftc.scheduler.bindings.Binding;
 import org.mercurialftc.mercurialftc.scheduler.commands.ParallelCommandGroup;
-import org.mercurialftc.mercurialftc.scheduler.commands.SequentialCommandGroup;
 import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
-
-import java.util.function.BooleanSupplier;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "OPModeEx")
@@ -25,7 +22,7 @@ public class TestOPEx extends OpModeEX {
     @Override
     public void registerSubsystems() {
         deposit= new Deposit(this);
-        mecanumDriveBase = new MechanumDriveBase(this, new Pose2D());
+        mecanumDriveBase = new MechanumDriveBase(this, new Pose2d());
         endGame = new EndGame(this);
         intake = new Intake(this);
     }
@@ -80,7 +77,7 @@ public class TestOPEx extends OpModeEX {
 
     @Override
     public void loopEX() {
-        mecanumDriveBase.sampleMecanumDrive.setDrivePower(new Pose2d(Math.pow(gamepad1.left_stick_x,3)/2, Math.pow(gamepad1.left_stick_y,3)/2, Math.pow(gamepad1.right_stick_x, 3)/2));
+        mecanumDriveBase.drive.setDrivePower(new Pose2d(Math.pow(gamepad1.left_stick_x,3)/2, Math.pow(gamepad1.left_stick_y,3)/2, Math.pow(gamepad1.right_stick_x, 3)/2));
     }
 
     @Override
