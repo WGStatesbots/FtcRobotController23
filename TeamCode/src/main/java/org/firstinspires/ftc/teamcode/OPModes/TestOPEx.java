@@ -59,8 +59,12 @@ public class TestOPEx extends OpModeEX {
                 .or(gamepadEX1().leftY().buildBinding().lessThan(-0.01).greaterThan(0.01).bind())
                 .or(gamepadEX1().rightX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind())
                 .whileTrue(mecanumDriveBase.manualControl(gamepadEX1().leftX(),gamepadEX1().leftY(),gamepadEX1().rightX()));
+        //if you get an error on the line above, comment it out, uncomment line 82, and comment line 25 of MechanumDriveBase out
         //Intake
-        gamepadEX1().right_bumper().debounce(Binding.DebouncingType.BOTH, 0.1).onTrue(intake.setIntakePower(()->0.5)).onFalse(intake.setIntakePower(()->0));
+        gamepadEX1().a().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(intake.setIntakePower(()->0.5));
+        gamepadEX1().b().debounce(Binding.DebouncingType.LEADING_EDGE, 0.1).onTrue(intake.setIntakePower(()->-0.5));
+
+        gamepadEX1().right_trigger().buildBinding().greaterThan(0.5).bind().onTrue(intake.clawClose()).onFalse(intake.clawOpen());
     }
 
     @Override

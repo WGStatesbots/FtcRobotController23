@@ -49,4 +49,29 @@ public class Intake extends Subsystem {
                 ()-> iMotor.setPower(input.getAsDouble())
         );
     }
+
+    public Command clawOpen(){
+        return new LambdaCommand().setRequirements(this).setInterruptible(true).setExecute(
+                ()-> {
+                    iLClaw.setPosition(0);
+                    iRClaw.setPosition(1);
+                }
+                );
+    }
+
+    public Command clawClose(){
+        return new LambdaCommand().setRequirements(this).setInterruptible(true).setExecute(
+                ()->{
+                    iLClaw.setPosition(1);
+                    iRClaw.setPosition(0);
+                }
+        );
+    }
+    public Command stop(){
+        return new LambdaCommand().setRequirements(this).setInterruptible(false).setExecute(
+                ()->{
+                    iMotor.setPower(0);
+                }
+        );
+    }
 }
