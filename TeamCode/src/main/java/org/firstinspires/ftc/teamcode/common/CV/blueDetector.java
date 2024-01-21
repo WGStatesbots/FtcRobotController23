@@ -10,26 +10,21 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class blueDetector extends OpenCvPipeline {
-    public enum position {
-        LEFT,
-        RIGHT,
-        MIDDLE
-    }
-    static public position pos;
+    static public Location pos;
     Telemetry telemetry;
     Mat mat = new Mat();
     //define detection bounding boxes
     Rect LEFT_ROI = new Rect(
-            new Point(425,50),
-            new Point(700, 200)
+            new Point(0,0),
+            new Point(400, 720)
     );
     Rect MID_ROI = new Rect(
-            new Point(500, 50),
-            new Point(400, 200)
+            new Point(400, 0),
+            new Point(800, 720)
     );
     Rect RIGHT_ROI = new Rect(
-            new Point(450, 50),
-            new Point(600, 200)
+            new Point(800, 0),
+            new Point(1200, 720)
     );
 
     //define Minimum and Maximum blue values (what is blue and what is not)
@@ -61,16 +56,18 @@ public class blueDetector extends OpenCvPipeline {
         double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area()/255;
         double midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
 
-        if(leftValue<100){
-            pos=position.LEFT;
-        } else if (midValue<100) {
-            pos=position.MIDDLE;
-        } else if (rightValue<100) {
-            pos=position.RIGHT;
+        if(leftValue<400){
+            pos=Location.LEFT;
+        } else if (midValue<400) {
+            pos=Location.CENTER;
+        } else if (rightValue<400) {
+            pos=Location.RIGHT;
         } else{
              pos = null;
         }
-
+        telemetry.addData("left:", leftValue);
+        telemetry.addData("right:", rightValue);
+        telemetry.addData("middle:", midValue);
         return mat;
     }
 }

@@ -2,27 +2,27 @@ package org.firstinspires.ftc.teamcode.OPModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.sfdev.assembly.state.StateMachine;
 import com.sfdev.assembly.state.StateMachineBuilder;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.common.CV.Location;
+import org.firstinspires.ftc.teamcode.common.CV.blueDetector;
+import org.firstinspires.ftc.teamcode.common.CV.redDetector;
 import org.firstinspires.ftc.teamcode.common.CV.saturationDetector;
 import org.firstinspires.ftc.teamcode.common.hardware.Deposit;
 import org.firstinspires.ftc.teamcode.common.hardware.EndGame;
 import org.firstinspires.ftc.teamcode.common.hardware.Intake;
-import org.firstinspires.ftc.teamcode.common.hardware.MechanumDriveBase;
+import org.firstinspires.ftc.teamcode.common.hardware.MecanumDriveBase;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
-import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class Test20ptAuto extends OpModeEX {
+public class Red20ptAuto extends OpModeEX {
     private StateMachine stateMachine;
     enum States {
         SPIKEMARK,
@@ -31,17 +31,17 @@ public class Test20ptAuto extends OpModeEX {
     }
 
     private Deposit deposit;
-    private MechanumDriveBase mecanumDriveBase;
+    private MecanumDriveBase mecanumDriveBase;
     private EndGame endGame;
     private Intake intake;
 
-    saturationDetector pipeline;
+    redDetector pipeline;
     OpenCvWebcam webcam;
     String webcamName = "Webcam";
     @Override
     public void registerSubsystems() {
         deposit= new Deposit(this);
-        mecanumDriveBase = new MechanumDriveBase(this, new Pose2d());
+        mecanumDriveBase = new MecanumDriveBase(this, new Pose2d());
         endGame = new EndGame(this);
         intake = new Intake(this);
     }
@@ -50,14 +50,14 @@ public class Test20ptAuto extends OpModeEX {
     public void initEX() {
          stateMachine = new StateMachineBuilder()
                  .state(States.SPIKEMARK)
-                 .onEnter()
+                 .onEnter(()->mecanumDriveBase.goToSpikeMark(Location.RIGHT).queue())
                  .transitionTimed(0, States.DEPOSITING)
                  .state(States.DEPOSITING)
                  .onEnter(()->intake.setIntakePower(()->-0.5).queue())
                  .onExit(()->intake.stop().queue())
                  .transitionTimed(2)
                  .state(States.PARKING)
-                 .onEnter(mecanumDriveBase.park().queue())
+                 .onEnter(()->mecanumDriveBase.park().queue())
                  .build();
 
         //add the positions EVERY SINGLE MECHANISM SHOULD BE IN
@@ -73,7 +73,7 @@ public class Test20ptAuto extends OpModeEX {
                         hardwareMap.get(WebcamName.class, webcamName),
                         cameraMonitorViewId);
 
-        pipeline = new saturationDetector(telemetry);
+        pipeline = new redDetector(telemetry);
         webcam.setPipeline(pipeline);
 
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
@@ -105,11 +105,12 @@ public class Test20ptAuto extends OpModeEX {
     @Override
     public void startEX() {
         telemetry.addData("position", saturationDetector.pos);
+        stateMachine.start();
     }
 
     @Override
     public void loopEX() {
-
+        stateMachine.update();
     }
 
     @Override

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.common.hardware;
 
 import androidx.annotation.NonNull;
 
-import com.outoftheboxrobotics.photoncore.hardware.motor.PhotonDcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -27,7 +26,7 @@ public class Intake extends Subsystem {
         iMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "intake"));
         iLClaw = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "iLClaw"));
         iRClaw = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "iRClaw"));
-        setDefaultCommand(stop());
+        //setDefaultCommand(stop());
     }
 
     @Override

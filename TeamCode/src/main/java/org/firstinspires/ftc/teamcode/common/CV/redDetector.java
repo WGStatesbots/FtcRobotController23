@@ -9,37 +9,37 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class saturationDetector extends OpenCvPipeline {
+public class redDetector extends OpenCvPipeline {
     static public Location pos;
     Telemetry telemetry;
     Mat mat = new Mat();
     //define detection bounding boxes
     Rect LEFT_ROI = new Rect(
-            new Point(425,50),
-            new Point(700, 200)
+            new Point(0,0),
+            new Point(400, 720)
     );
     Rect MID_ROI = new Rect(
-            new Point(500, 50),
-            new Point(400, 200)
+            new Point(400, 0),
+            new Point(800, 720)
     );
     Rect RIGHT_ROI = new Rect(
-            new Point(450, 50),
-            new Point(600, 200)
+            new Point(800, 0),
+            new Point(1200, 720)
     );
 
-    //define Minimum and Maximum blue values (what is red and what is not)
-    Scalar minHSV1 = new Scalar(0, 50,50);
-    Scalar maxHSV1 = new Scalar(360/2, 240, 240);
+    //define Minimum and Maximum red values (what is red and what is not)
+    Scalar minHSV = new Scalar(0.0/2.0, 50,50);
+    Scalar maxHSV = new Scalar(60.0/2.0, 240, 240);
 
     //initalise telemetry
-    public saturationDetector(Telemetry t){telemetry = t;}
+    public redDetector(Telemetry t){telemetry = t;}
     @Override
     public Mat processFrame(Mat input) {
         //Convert to HSV
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Make all pixels that are blue turn white, everything else black
-        Core.inRange(mat, minHSV1, maxHSV1, mat);
+        Core.inRange(mat, minHSV, maxHSV, mat);
 
         //make matrixes of all the pixels inside of each of the rectangles
         Mat left = mat.submat(LEFT_ROI);
@@ -48,8 +48,8 @@ public class saturationDetector extends OpenCvPipeline {
 
         //draw rects on the screen
         Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0));
-        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
-        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
+        //Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
+        //Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
 
         //find the average greyness
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;

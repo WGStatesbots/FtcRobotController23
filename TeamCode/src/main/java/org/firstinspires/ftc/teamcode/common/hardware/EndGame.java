@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.common.hardware;
 
 import androidx.annotation.NonNull;
 
-import com.outoftheboxrobotics.photoncore.hardware.motor.PhotonDcMotor;
-import com.outoftheboxrobotics.photoncore.hardware.servo.PhotonServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -31,6 +29,8 @@ public class EndGame extends Subsystem {
         hMotor = new CachingDcMotorEX( opModeEX.hardwareMap.get(DcMotorEx.class, "hMotor"));
         hServo = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "hServo"));
         pServo = new CachingServo(opModeEX.hardwareMap.get(Servo.class, "pServo"));
+
+        setDefaultCommand(manualWinchControl(()->0));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class EndGame extends Subsystem {
                 .setRequirements(this)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    pServo.setPosition(.5);
+                    pServo.setPosition(0);
                 })
                 .setFinish(()->false);
     }

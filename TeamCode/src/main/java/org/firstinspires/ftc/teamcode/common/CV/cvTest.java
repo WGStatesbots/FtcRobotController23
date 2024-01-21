@@ -15,7 +15,7 @@ public class cvTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        saturationDetector pipeline;
+        blueDetector pipeline;
         OpenCvWebcam webcam;
         String webcamName = "Webcam";
 
@@ -32,7 +32,7 @@ public class cvTest extends LinearOpMode {
                         hardwareMap.get(WebcamName.class, webcamName),
                         cameraMonitorViewId);
 
-        pipeline = new saturationDetector(telemetry);
+        pipeline = new blueDetector(telemetry);
         webcam.setPipeline(pipeline);
 
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
@@ -50,7 +50,7 @@ public class cvTest extends LinearOpMode {
         });
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         while(opModeInInit()){
-            telemetry.addData("position", saturationDetector.pos);
+            telemetry.addData("position", blueDetector.pos);
             telemetry.update();
         }
         waitForStart();

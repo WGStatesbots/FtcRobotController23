@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import org.firstinspires.ftc.teamcode.common.CV.Location;
 import org.firstinspires.ftc.teamcode.common.CV.saturationDetector;
 import org.firstinspires.ftc.teamcode.common.RR.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.common.RR.trajectorysequence.TrajectorySequence;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
 import org.mercurialftc.mercurialftc.scheduler.commands.Command;
 import org.mercurialftc.mercurialftc.scheduler.commands.LambdaCommand;
@@ -24,35 +25,33 @@ public class MecanumDriveBase extends Subsystem {
         StartPose = startPose;
     }
 
-    public Trajectory leftTraj;
-    public Trajectory midTraj;
-    public Trajectory rightTraj;
+    public TrajectorySequence leftTraj, midTraj, rightTraj;
 
     @Override
     public void init() {
         drive = new SampleMecanumDrive(opModeEX.hardwareMap);
         drive.setPoseEstimate(StartPose);
-        setDefaultCommand(stop());
+        //setDefaultCommand(stop());
         if(Globals.ALLIANCE==Location.RED) {
             drive.setPoseEstimate(new Pose2d(15, -60, Math.toRadians(90)));
-            leftTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            leftTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(15, -34)).lineTo(new Vector2d(10, -34))
                     .build();
-            midTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            midTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(16, -34, Math.toRadians(-90)))
                     .build();
-            rightTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            rightTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(12, -34, Math.toRadians(180))) //
                     .build();
         } else {
             drive.setPoseEstimate(new Pose2d());
-            leftTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            leftTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(15, -34)).lineTo(new Vector2d(10, -34))
                     .build();
-            midTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            midTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(16, -34, Math.toRadians(-90)))
                     .build();
-            rightTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+            rightTraj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(12, -34, Math.toRadians(180))) //
                     .build();
         }
@@ -95,34 +94,6 @@ public class MecanumDriveBase extends Subsystem {
                 .setFinish(()->false);
     }
 
-    public Command goToLeftSpikeMark(){
-        return new LambdaCommand()
-                .setRequirements(this)
-                .setInterruptible(false)
-                .setExecute(()-> {
-                    drive.followTrajectory(leftTraj);
-                })
-                .setFinish(()->false);
-    }
-    public Command goToRightSpikeMark(){
-        return new LambdaCommand()
-                .setRequirements(this)
-                .setInterruptible(false)
-                .setExecute(()-> {
-                    drive.followTrajectory(rightTraj);
-                })
-                .setFinish(()->false);
-    }
-    public Command goToMiddleSpikeMark(){
-        return new LambdaCommand()
-                .setRequirements(this)
-                .setInterruptible(false)
-                .setExecute(()-> {
-                    drive.followTrajectory(midTraj);
-                })
-                .setFinish(()->false);
-    }
-
     public Command goToSpikeMark(Location location){
         return new LambdaCommand()
                 .setRequirements(this)
@@ -130,13 +101,22 @@ public class MecanumDriveBase extends Subsystem {
                 .setExecute(()->{
                         switch (saturationDetector.pos){
                             case LEFT:
-                                drive.followTrajectory(leftTraj);
+                                drive.followTrajectorySequence(leftTraj);
                                 break;
-                            case MIDDLE:
-                                drive.followTrajectory(midTraj);
+                            case CENTER:
+                                drive.followTrajectorySequence(midTraj);
                                 break;
                             case RIGHT:
-                                drive.followTrajectory(rightTraj);
+                                drive.followTrajectorySequence(rightTraj);
                         }}).setFinish(()->drive.isBusy());
+    }
+
+    public Command park(){
+        return new LambdaCommand()
+                .setRequirements(this)
+                .setInterruptible(true)
+                .setExecute(()->{
+                    //pretend this is parking
+                }).setFinish(()->true);
     }
 }
