@@ -41,7 +41,7 @@ public class cvTest extends LinearOpMode {
 
             @Override
             public void onOpened() {
-                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
@@ -51,6 +51,9 @@ public class cvTest extends LinearOpMode {
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         while(opModeInInit()){
             telemetry.addData("position", blueDetector.pos);
+            telemetry.addData("vals", pipeline.leftValue);
+            telemetry.addData("vals", pipeline.rightValue);
+            telemetry.addData("vals", pipeline.midValue);
             telemetry.update();
         }
         waitForStart();

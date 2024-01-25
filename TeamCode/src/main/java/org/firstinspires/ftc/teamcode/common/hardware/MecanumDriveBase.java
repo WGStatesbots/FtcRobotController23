@@ -93,30 +93,4 @@ public class MecanumDriveBase extends Subsystem {
                 })
                 .setFinish(()->false);
     }
-
-    public Command goToSpikeMark(Location location){
-        return new LambdaCommand()
-                .setRequirements(this)
-                .setInterruptible(false)
-                .setExecute(()->{
-                        switch (saturationDetector.pos){
-                            case LEFT:
-                                drive.followTrajectorySequence(leftTraj);
-                                break;
-                            case CENTER:
-                                drive.followTrajectorySequence(midTraj);
-                                break;
-                            case RIGHT:
-                                drive.followTrajectorySequence(rightTraj);
-                        }}).setFinish(()->drive.isBusy());
-    }
-
-    public Command park(){
-        return new LambdaCommand()
-                .setRequirements(this)
-                .setInterruptible(true)
-                .setExecute(()->{
-                    //pretend this is parking
-                }).setFinish(()->true);
-    }
 }

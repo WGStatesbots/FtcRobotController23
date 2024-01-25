@@ -10,6 +10,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class blueDetector extends OpenCvPipeline {
+    public double leftValue, rightValue, midValue;
     static public Location pos;
     Telemetry telemetry;
     Mat mat = new Mat();
@@ -52,15 +53,15 @@ public class blueDetector extends OpenCvPipeline {
         //Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
 
         //find the average greyness
-        double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
-        double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area()/255;
-        double midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
+        leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
+        rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area()/255;
+        midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
 
-        if(leftValue<400){
+        if(leftValue>0.02){
             pos=Location.LEFT;
-        } else if (midValue<400) {
+        } else if (midValue>0.1) {
             pos=Location.CENTER;
-        } else if (rightValue<400) {
+        } else if (rightValue<0.1) {
             pos=Location.RIGHT;
         } else{
              pos = null;

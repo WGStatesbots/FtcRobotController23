@@ -3,13 +3,10 @@ package org.firstinspires.ftc.teamcode.OPModes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.sfdev.assembly.state.StateMachine;
-import com.sfdev.assembly.state.StateMachineBuilder;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.common.CV.Location;
 import org.firstinspires.ftc.teamcode.common.CV.blueDetector;
-import org.firstinspires.ftc.teamcode.common.CV.saturationDetector;
+import org.firstinspires.ftc.teamcode.common.RR.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.common.hardware.Deposit;
 import org.firstinspires.ftc.teamcode.common.hardware.EndGame;
 import org.firstinspires.ftc.teamcode.common.hardware.Intake;
@@ -20,23 +17,17 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
+@Autonomous(name = "Blue 20pt")
 public class Blue20ptAuto extends OpModeEX {
-    private StateMachine stateMachine;
-    enum States {
-        SPIKEMARK,
-        DEPOSITING,
-        PARKING
-    }
-
+    blueDetector pipeline;
+    OpenCvWebcam webcam;
+    String webcamName = "Webcam";
     private Deposit deposit;
     private MecanumDriveBase mecanumDriveBase;
     private EndGame endGame;
     private Intake intake;
 
-    blueDetector pipeline;
-    OpenCvWebcam webcam;
-    String webcamName = "Webcam";
+    TrajectorySequence leftTraj, rightTraj, midTraj;
     @Override
     public void registerSubsystems() {
         deposit= new Deposit(this);
@@ -47,21 +38,6 @@ public class Blue20ptAuto extends OpModeEX {
 
     @Override
     public void initEX() {
-         stateMachine = new StateMachineBuilder()
-                 .state(States.SPIKEMARK)
-                 .onEnter(()->mecanumDriveBase.goToSpikeMark(Location.RIGHT).queue())
-                 .transitionTimed(0, States.DEPOSITING)
-                 .state(States.DEPOSITING)
-                 .onEnter(()->intake.setIntakePower(()->-0.5).queue())
-                 .onExit(()->intake.stop().queue())
-                 .transitionTimed(2)
-                 .state(States.PARKING)
-                 .onEnter(()->mecanumDriveBase.park().queue())
-                 .build();
-
-        //add the positions EVERY SINGLE MECHANISM SHOULD BE IN
-        //DO robot.resetEncoders() in here as well
-
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier(
                         "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()
@@ -90,10 +66,16 @@ public class Blue20ptAuto extends OpModeEX {
         });
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
 
+        leftTraj = mecanumDriveBase.drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(25,34, Math.toRadians(-180)))
+                .addTemporalMarker(()->deposit.manualDepositControl(()->1).queue())
+                .addTemporalMarker(1, ()->deposit.manualDepositControl(()->0).queue())
+                .build();
     }
 
     @Override
     public void registerBindings() {
+
     }
 
     @Override
@@ -103,20 +85,16 @@ public class Blue20ptAuto extends OpModeEX {
 
     @Override
     public void startEX() {
-        telemetry.addData("position", saturationDetector.pos);
-        stateMachine.start();
+        mecanumDriveBase.drive.followTrajectorySequence(leftTraj);
     }
 
     @Override
     public void loopEX() {
-        stateMachine.update();
+        mecanumDriveBase.drive.update();
     }
 
     @Override
     public void stopEX() {
-        deposit.stop();
-        mecanumDriveBase.stop();
-        intake.setIntakePower(()->0);
-        endGame.manualWinchControl(()->0);
+
     }
 }
