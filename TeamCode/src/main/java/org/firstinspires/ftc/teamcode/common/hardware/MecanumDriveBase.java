@@ -4,10 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 import org.firstinspires.ftc.teamcode.common.CV.Location;
-import org.firstinspires.ftc.teamcode.common.CV.saturationDetector;
 import org.firstinspires.ftc.teamcode.common.RR.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.common.RR.trajectorysequence.TrajectorySequence;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;

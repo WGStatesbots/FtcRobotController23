@@ -10,62 +10,64 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class redDetector extends OpenCvPipeline {
+    public double leftValue, midValue;
     static public Location pos;
     Telemetry telemetry;
+    Mat lowMat = new Mat();
+    Mat highMat = new Mat();
+
     Mat mat = new Mat();
     //define detection bounding boxes
     Rect LEFT_ROI = new Rect(
             new Point(0,0),
-            new Point(400, 720)
+            new Point(600, 720)
     );
     Rect MID_ROI = new Rect(
-            new Point(400, 0),
-            new Point(800, 720)
-    );
-    Rect RIGHT_ROI = new Rect(
-            new Point(800, 0),
+            new Point(600, 0),
             new Point(1200, 720)
     );
 
-    //define Minimum and Maximum red values (what is red and what is not)
-    Scalar minHSV = new Scalar(0.0/2.0, 50,50);
-    Scalar maxHSV = new Scalar(60.0/2.0, 240, 240);
+    //define Minimum and Maximum blue values (what is blue and what is not)
+    Scalar minHSV1 = new Scalar(0/2, 50,50);
+    Scalar maxHSV1 = new Scalar(30/2, 240, 240);
+    Scalar minHSV2 = new Scalar(330/2, 50,50);
+    Scalar maxHSV2 = new Scalar(360/2, 240, 240);
 
     //initalise telemetry
     public redDetector(Telemetry t){telemetry = t;}
     @Override
     public Mat processFrame(Mat input) {
         //Convert to HSV
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, lowMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, highMat, Imgproc.COLOR_RGB2HSV);
 
         //Make all pixels that are blue turn white, everything else black
-        Core.inRange(mat, minHSV, maxHSV, mat);
+        Core.inRange(lowMat, minHSV1, maxHSV1, lowMat);
+        Core.inRange(highMat, minHSV2, maxHSV2, highMat);
+
+        Core.add(lowMat, highMat, mat);
 
         //make matrixes of all the pixels inside of each of the rectangles
-        Mat left = mat.submat(LEFT_ROI);
-        Mat mid = mat.submat(MID_ROI);
-        Mat right = mat.submat(RIGHT_ROI);
+        Mat left = lowMat.submat(LEFT_ROI);
+        Mat mid = lowMat.submat(MID_ROI);
 
         //draw rects on the screen
-        Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(lowMat, LEFT_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(lowMat, MID_ROI, new Scalar(255,0,0));
 
         //find the average greyness
-        double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
-        double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area()/255;
-        double midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
+        leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
+        midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
 
-        if(leftValue<100){
-            pos= Location.LEFT;
-        } else if (midValue<100) {
-            pos= Location.CENTER;
-        } else if (rightValue<100) {
-            pos= Location.RIGHT;
-        } else{
-             pos = null;
+        if(leftValue>0.1){
+            pos = Location.LEFT;
+        } else if (midValue>0.05) {
+            pos = Location.CENTER;
+        }  else{
+            pos = Location.RIGHT;
         }
-
-        return mat;
+        telemetry.addData("left:", leftValue);
+        telemetry.addData("middle:", midValue);
+        return lowMat;
     }
 }

@@ -17,14 +17,10 @@ public class blueDetector extends OpenCvPipeline {
     //define detection bounding boxes
     Rect LEFT_ROI = new Rect(
             new Point(0,0),
-            new Point(400, 720)
+            new Point(600, 720)
     );
     Rect MID_ROI = new Rect(
-            new Point(400, 0),
-            new Point(800, 720)
-    );
-    Rect RIGHT_ROI = new Rect(
-            new Point(800, 0),
+            new Point(600, 0),
             new Point(1200, 720)
     );
 
@@ -45,29 +41,23 @@ public class blueDetector extends OpenCvPipeline {
         //make matrixes of all the pixels inside of each of the rectangles
         Mat left = mat.submat(LEFT_ROI);
         Mat mid = mat.submat(MID_ROI);
-        Mat right = mat.submat(RIGHT_ROI);
 
         //draw rects on the screen
         Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
-        //Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
 
         //find the average greyness
         leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area()/255;
-        rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area()/255;
         midValue = Core.sumElems(mid).val[0] / MID_ROI.area()/255;
 
-        if(leftValue>0.02){
-            pos=Location.LEFT;
-        } else if (midValue>0.1) {
-            pos=Location.CENTER;
-        } else if (rightValue<0.1) {
-            pos=Location.RIGHT;
-        } else{
-             pos = null;
+        if(leftValue>0.1){
+            pos = Location.LEFT;
+        } else if (midValue>0.05) {
+            pos = Location.CENTER;
+        }  else{
+             pos = Location.RIGHT;
         }
         telemetry.addData("left:", leftValue);
-        telemetry.addData("right:", rightValue);
         telemetry.addData("middle:", midValue);
         return mat;
     }

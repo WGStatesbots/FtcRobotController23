@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.hardware;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -11,7 +12,6 @@ import org.mercurialftc.mercurialftc.scheduler.commands.Command;
 import org.mercurialftc.mercurialftc.scheduler.commands.LambdaCommand;
 import org.mercurialftc.mercurialftc.scheduler.subsystems.Subsystem;
 import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingCRServo;
-import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotor;
 import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotorEX;
 
 import java.util.function.DoubleSupplier;
@@ -23,25 +23,31 @@ public class Deposit extends Subsystem {
         super(opModeEX);
     }
 
-    public Command manualControl(DoubleSupplier controller){
+    public void manualControl(DoubleSupplier d){
+        opModeEX.telemetry.addLine("manualcontrol");
+        leftMotor.setPower(d.getAsDouble());
+        rightMotor.setPower(d.getAsDouble());
+    }
+
+    public Command manualControlCommand(DoubleSupplier controller){
         return new LambdaCommand()
                 .setRequirements(this)
-                .setRunStates(OpModeEX.OpModeEXRunStates.LOOP)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    leftMotor.setPower(controller.getAsDouble());
-                    rightMotor.setPower(controller.getAsDouble());
+                    manualControl(controller);
                 })
                 .setFinish(()->false);
     }
 
-    public Command manualDepositControl(DoubleSupplier controller){
+    public void manualDepositControl(DoubleSupplier d){
+        depositServo.setPower(d.getAsDouble());
+    }
+    public Command manualDepositControlCommand(DoubleSupplier controller){
         return new LambdaCommand()
                 .setRequirements(this)
-                .setRunStates(OpModeEX.OpModeEXRunStates.LOOP)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    depositServo.setPower(controller.getAsDouble());
+                    manualDepositControl(controller);
                 })
                 .setFinish(()->false);
     }
@@ -59,6 +65,11 @@ public class Deposit extends Subsystem {
                 .setFinish(()->false);
     }
 
+    public void setZeroMode(DcMotor.ZeroPowerBehavior zpb){
+        leftMotor.setZeroPowerBehavior(zpb);
+        rightMotor.setZeroPowerBehavior(zpb);
+    }
+
     @Override
     public void init() {
         leftMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dLeft"));
@@ -67,7 +78,7 @@ public class Deposit extends Subsystem {
         depositServo = new CachingCRServo(opModeEX.hardwareMap.get(CRServo.class, "dServo"));
         depositServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        setDefaultCommand(stop());
+        //setDefaultCommand(stop());
     }
 
     @Override

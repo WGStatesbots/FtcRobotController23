@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.common.hardware.MecanumDriveBase;
 import org.mercurialftc.mercurialftc.scheduler.OpModeEX;
 import org.mercurialftc.mercurialftc.scheduler.bindings.Binding;
 import org.mercurialftc.mercurialftc.scheduler.commands.ParallelCommandGroup;
-import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "OPModeEx")
@@ -41,16 +40,16 @@ public class TestOPEx extends OpModeEX {
 
         //Control the deposit (slides) manually
         gamepadEX2().leftY().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
-                .whileTrue(deposit.manualControl(gamepadEX2().leftY().invert() ));
+                .whileTrue(deposit.manualControlCommand(gamepadEX2().leftY())).onFalse(deposit.stop());
         //Control the servo
         gamepadEX2().right_trigger().buildBinding().greaterThan(0.01).bind()
-                .whileTrue(deposit.manualDepositControl(gamepadEX2().right_trigger()));
+                .whileTrue(deposit.manualDepositControlCommand(gamepadEX2().right_trigger())).onFalse(deposit.stop());
         //Raise the hook
         gamepadEX2().left_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.05).onTrue(endGame.readyHook());
         //Lower hook, then try to raise the robot until power gets too high (may need tuning, 5a just sounded right as stall current is 8a iirc)
         gamepadEX2().right_bumper().debounce(Binding.DebouncingType.LEADING_EDGE, 0.05).onTrue(endGame.lowerHook()).onFalse(endGame.drop());
         gamepadEX2().dpad_up().debounce(Binding.DebouncingType.LEADING_EDGE, 0.05).onTrue(endGame.launchDrone());
-        gamepadEX2().rightY().buildBinding().greaterThan(0.05).lessThan(-0.05).bind().whileTrue(endGame.manualWinchControl(gamepadEX2().rightY()));
+        gamepadEX2().rightY().buildBinding().greaterThan(0.5).lessThan(-0.5).bind().whileTrue(endGame.manualWinchControl(gamepadEX2().rightY()));
 
         //Move with small dead zones (prevent whine)
         /*gamepadEX1().leftX().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()

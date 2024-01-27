@@ -14,8 +14,32 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(90)))
-                                .lineTo(new Vector2d(25,34))
+                        drive.trajectorySequenceBuilder(new Pose2d(12.00, -63.00, Math.toRadians(-90.00)))
+//                                .addDisplacementMarker(0,()->{
+//                                    intake.setIntakePower(()->-0.5).queue();
+//                                })
+//                                .addTemporalMarker(2,()->{
+//                                    intake.setIntakePower(()->0).queue();
+//                                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
+//                                    deposit.manualControl(()->1);
+//                                })
+//                                .addTemporalMarker(3, ()->{
+//                                    deposit.manualControl(()->0);
+//                                })
+//                                .addTemporalMarker(4,()->{
+//                                    deposit.manualDepositControl(()->1);
+//                                })
+//                                .addTemporalMarker(6, ()->{
+//                                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
+//                                    deposit.manualDepositControl(()->0);
+//                                })
+                                .setReversed(true)
+                                .splineTo(new Vector2d(12.00, -35.00), Math.toRadians(90))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(48.00, -36.00), Math.toRadians(0))
+                                .setReversed(true)
+                                .splineToLinearHeading(new Pose2d(48.00, -61.00, Math.toRadians(0.00)), Math.toRadians(0.00))
+                                .setReversed(false)
                                 .build()
                 );
 
