@@ -14,32 +14,32 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(12.00, -63.00, Math.toRadians(-90.00)))
-//                                .addDisplacementMarker(0,()->{
-//                                    intake.setIntakePower(()->-0.5).queue();
-//                                })
-//                                .addTemporalMarker(2,()->{
+                        drive.trajectorySequenceBuilder(new Pose2d(12.00, 63.00, Math.toRadians(90.00)))
+                                .addDisplacementMarker(0.4,0,()->{
+//                                    intake.setIntakePower(()->-1).queue();
+//                                    deposit.manualControl(()->-1);
+                                })
+                                .addDisplacementMarker(0.5,0,()->{
 //                                    intake.setIntakePower(()->0).queue();
 //                                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-//                                    deposit.manualControl(()->1);
-//                                })
-//                                .addTemporalMarker(3, ()->{
 //                                    deposit.manualControl(()->0);
-//                                })
-//                                .addTemporalMarker(4,()->{
+                                })
+                                .addDisplacementMarker(0.6,0,()->{
+//                                    deposit.manualControl(()->0);
 //                                    deposit.manualDepositControl(()->1);
-//                                })
-//                                .addTemporalMarker(6, ()->{
+                                })
+                                .addDisplacementMarker(.85,0, ()->{
 //                                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
 //                                    deposit.manualDepositControl(()->0);
-//                                })
+                                })
                                 .setReversed(true)
-                                .splineTo(new Vector2d(12.00, -35.00), Math.toRadians(90))
+                                .splineTo(new Vector2d(35.00, 34.00), Math.toRadians(180))
                                 .setReversed(false)
-                                .splineTo(new Vector2d(48.00, -36.00), Math.toRadians(0))
+                                .splineTo(new Vector2d(48.00, 42.00), Math.toRadians(0))
                                 .setReversed(true)
-                                .splineToLinearHeading(new Pose2d(48.00, -61.00, Math.toRadians(0.00)), Math.toRadians(0.00))
-                                .setReversed(false)
+                                .waitSeconds(2)
+                                .splineToConstantHeading(new Vector2d(42, 61), Math.toRadians(0.00))
+                                .setReversed(true)
                                 .build()
                 );
 

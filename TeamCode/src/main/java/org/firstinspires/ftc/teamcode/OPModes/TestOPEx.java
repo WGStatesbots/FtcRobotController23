@@ -40,7 +40,7 @@ public class TestOPEx extends OpModeEX {
 
         //Control the deposit (slides) manually
         gamepadEX2().leftY().buildBinding().lessThan(-0.01).greaterThan(0.01).bind()
-                .whileTrue(deposit.manualControlCommand(gamepadEX2().leftY())).onFalse(deposit.stop());
+                .whileTrue(deposit.manualControlCommand(gamepadEX2().leftY().invert())).onFalse(deposit.stop());
         //Control the servo
         gamepadEX2().right_trigger().buildBinding().greaterThan(0.01).bind()
                 .whileTrue(deposit.manualDepositControlCommand(gamepadEX2().right_trigger())).onFalse(deposit.stop());

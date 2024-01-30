@@ -75,6 +75,9 @@ public class Deposit extends Subsystem {
         leftMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dLeft"));
         rightMotor = new CachingDcMotorEX(opModeEX.hardwareMap.get(DcMotorEx.class, "dRight"));
 
+        leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         depositServo = new CachingCRServo(opModeEX.hardwareMap.get(CRServo.class, "dServo"));
         depositServo.setDirection(DcMotorSimple.Direction.REVERSE);
 

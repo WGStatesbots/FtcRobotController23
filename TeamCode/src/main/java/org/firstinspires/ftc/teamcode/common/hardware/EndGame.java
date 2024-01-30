@@ -61,7 +61,7 @@ public class EndGame extends Subsystem {
                 .setRequirements(this)
                 .setInterruptible(true)
                 .setExecute(()->{
-                    hServo.setPosition(0.8);
+                    hServo.setPosition(0);
                 })
                 .setFinish(()->false);
     }

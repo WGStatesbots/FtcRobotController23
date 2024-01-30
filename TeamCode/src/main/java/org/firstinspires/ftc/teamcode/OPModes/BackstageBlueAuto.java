@@ -69,95 +69,78 @@ public class BackstageBlueAuto extends OpModeEX {
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
 
         leftTraj = mecanumDriveBase.drive.trajectorySequenceBuilder(new Pose2d(12.00, 63.00, Math.toRadians(90.00)))
-                .addDisplacementMarker(0,()->{
-                    intake.setIntakePower(()->-0.5).queue();
+                .addDisplacementMarker(0.4,0,()->{
+                    intake.setIntakePower(()->-1).queue();
+                    deposit.manualControl(()->-1);
                 })
-                .addTemporalMarker(2,()->{
+                .addDisplacementMarker(0.5,0,()->{
                     intake.setIntakePower(()->0).queue();
                     deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-                    deposit.manualControl(()->1);
-                })
-                .addTemporalMarker(3, ()->{
                     deposit.manualControl(()->0);
                 })
-                .addTemporalMarker(4,()->{
+                .addDisplacementMarker(0.6,0,()->{
+                    deposit.manualControl(()->0);
                     deposit.manualDepositControl(()->1);
                 })
-                .addTemporalMarker(6, ()->{
+                .addDisplacementMarker(.85,0, ()->{
                     deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
                     deposit.manualDepositControl(()->0);
                 })
                 .setReversed(true)
-                .splineTo(new Vector2d(35.00, 34.00), Math.toRadians(0.00))
-                .addDisplacementMarker(()->{
-                    intake.setIntakePower(()->-1).queue();
-                })
-                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
-                    intake.setIntakePower(()->0).queue();
-                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-                    deposit.manualControlCommand(()->0).queue();
-                })
+                .splineTo(new Vector2d(35.00, 34.00), Math.toRadians(180))
                 .setReversed(false)
-                .splineTo(new Vector2d(48.00, 42.00), Math.toRadians(0.00))
+                .splineTo(new Vector2d(48.00, 42.00), Math.toRadians(0))
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(48, 61), Math.toRadians(0.00))
-                .setReversed(false)
+                .waitSeconds(2)
+                .splineToConstantHeading(new Vector2d(42, 61), Math.toRadians(0.00))
+                .setReversed(true)
                 .build();
 
-        midTraj = mecanumDriveBase.drive.trajectorySequenceBuilder(new Pose2d(12, 63, Math.toRadians(90.00)))
-                .addDisplacementMarker(0,()->{
-                    intake.setIntakePower(()->-0.5).queue();
+        midTraj = mecanumDriveBase.drive.trajectorySequenceBuilder(new Pose2d(12, 63, Math.toRadians(90)))
+                .addDisplacementMarker(0.1,0,()->{
+                            intake.setIntakePower(()->-1).queue();
                 })
-                .addTemporalMarker(2,()->{
-                    intake.setIntakePower(()->0).queue();
-                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-                    deposit.manualControl(()->1);
+                .addDisplacementMarker(0.4,0,()->{
+                            intake.setIntakePower(()->0).queue();
+                            deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
                 })
-                .addTemporalMarker(3, ()->{
-                    deposit.manualControl(()->0);
+                .addDisplacementMarker(0.6,0, ()->{
+                            deposit.manualControl(()->-1);
                 })
-                .addTemporalMarker(4,()->{
-                    deposit.manualDepositControl(()->1);
+                .addDisplacementMarker(0.69,0,()->{
+                            deposit.manualControl(()->0);
+                            deposit.manualDepositControl(()->1);
                 })
-                .addTemporalMarker(6, ()->{
-                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
-                    deposit.manualDepositControl(()->0);
+                .addDisplacementMarker(0.75,0, ()->{
+                            deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
+                            deposit.manualDepositControl(()->0);
                 })
                 .setReversed(true)
-                .splineTo(new Vector2d(12.00, 35.00), Math.toRadians(270.00))
-                .addDisplacementMarker(()->{
-                    intake.setIntakePower(()->-1).queue();
-                })
-                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
-                    intake.setIntakePower(()->0).queue();
-                    deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-                    deposit.manualControlCommand(()->0).queue();
-                })
+                .splineTo(new Vector2d(12.00, 35.00), Math.toRadians(-90))
                 .setReversed(false)
-                .splineTo(new Vector2d(48.00, 36.00), Math.toRadians(0.00))
+                .splineTo(new Vector2d(48.00, 36.00), Math.toRadians(0))
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(48.00, 61.00, Math.toRadians(0.00)), Math.toRadians(0.00))
+                .waitSeconds(3)
+                .splineToConstantHeading(new Vector2d(48.00, 61.00), Math.toRadians(0.00))
                 .setReversed(false)
                 .build();
-
-
 
         rightTraj = mecanumDriveBase.drive.trajectorySequenceBuilder(new Pose2d(12.00, 63.00, Math.toRadians(90.00)))
-                .addDisplacementMarker(0,()->{
-                    intake.setIntakePower(()->-0.5).queue();
+                .addDisplacementMarker(0.25,0,()->{
+                    intake.setIntakePower(()->-1).queue();
                 })
-                .addTemporalMarker(2,()->{
+                .addDisplacementMarker(0.4,0,()->{
                     intake.setIntakePower(()->0).queue();
                     deposit.setZeroMode(DcMotor.ZeroPowerBehavior.BRAKE);
-                    deposit.manualControl(()->1);
                 })
-                .addTemporalMarker(3, ()->{
+                .addDisplacementMarker(0.55,0, ()->{
+                    deposit.manualControl(()->-1);
+                })
+                .addDisplacementMarker(0.63,0,()->{
                     deposit.manualControl(()->0);
-                })
-                .addTemporalMarker(4,()->{
                     deposit.manualDepositControl(()->1);
                 })
-                .addTemporalMarker(6, ()->{
+                .addDisplacementMarker(0.75,0, ()->{
                     deposit.setZeroMode(DcMotor.ZeroPowerBehavior.FLOAT);
                     deposit.manualDepositControl(()->0);
                 })
